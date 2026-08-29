@@ -245,7 +245,7 @@
                 <img
                     id="student-photo"
                     class="student-photo"
-                    src="https://i.pravatar.cc/300?img=12"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5QM47wVRlSGYSqun44_rFYkfbVtj2fDqSXjXmymP1iCakE1nAgpgA2Fw&s=10"
                     alt="Student Photo"
                     crossorigin="anonymous">
 
@@ -301,26 +301,61 @@
         photo: "https://i.pravatar.cc/300?img=12",
         active: true
     };
-
+    
     // ---- Read JSON from the ?data= query param and populate the card ----
     function loadStudentDataFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        const raw = params.get("data");
 
-        if (!raw) {
-            populateCard(DEFAULT_DATA);
-            return;
-        }
+    // Get everything after "?data="
+    const search = window.location.search;
+    const dataIndex = search.indexOf("?data=");
 
-        try {
-            const student = JSON.parse(raw);
-            populateCard(student);
-        } catch (error) {
-            console.error("Invalid JSON:", error);
-            showError("Invalid student data.");
-            populateCard(DEFAULT_DATA);
-        }
+    if (dataIndex === -1) {
+        populateCard(DEFAULT_DATA);
+        return;
     }
+
+    try {
+
+        // Get the COMPLETE data string
+        let raw = search.substring(dataIndex + 6);
+
+        console.log("RAW URL DATA:");
+        console.log(raw);
+
+        // Decode %22, %20, etc.
+        raw = decodeURIComponent(raw);
+
+        console.log("DECODED DATA:");
+        console.log(raw);
+
+        // Remove unnecessary backslashes
+        // Example:
+        // \:  -> :
+        // \&  -> &
+        // \"  -> "
+        raw = raw.replace(/\\([:"&])/g, "$1");
+
+        console.log("CLEAN DATA:");
+        console.log(raw);
+
+        // Convert JSON string to object
+        const student = JSON.parse(raw);
+
+        console.log("STUDENT OBJECT:");
+        console.log(student);
+
+        // Show data on card
+        populateCard(student);
+
+    } catch (error) {
+
+        console.error("ERROR:", error);
+
+        showError("Invalid student data.");
+
+        populateCard(DEFAULT_DATA);
+    }
+}
 
     function populateCard(data) {
         document.getElementById("school-name").textContent = data.school;
