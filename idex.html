@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Digital Student Card</title>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet">
+
+        <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            background: radial-gradient(circle at 20% 20%, #eef2ff 0%, #f8fafc 45%, #f1f5f9 100%);
+            font-family: 'Inter', Arial, sans-serif;
+            padding: 30px 20px;
+        }
+
+        /* ---------- CARD ---------- */
+        .student-card {
+            position: relative;
+            width: 400px;
+            max-width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow:
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 20px 40px -12px rgba(30, 41, 59, 0.18);
+        }
+
+        .card-banner {
+            padding: 15px 24px;
+            background: linear-gradient(135deg, #4f46e5 0%, #2563eb 55%, #0ea5e9 100%);
+            position: relative;
+        }
+
+        .card-banner::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 85% 0%, rgba(255,255,255,0.25), transparent 55%);
+        }
+
+        .school {
+            position: relative;
+            color: #ffffff;
+        }
+
+        .school h2 {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .school p {
+            margin: 4px 0 0;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+        }
+
+        .card-body {
+            padding: 15px 30px 30px;
+        }
+
+        .student-photo {
+            display: block;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #eef2ff;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+            background: #e2e8f0;
+        }
+
+        .student-name {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 4px;
+        }
+
+        .student-sub {
+            text-align: center;
+            font-size: 12.5px;
+            color: #94a3b8;
+            margin: 0 0 22px;
+            letter-spacing: 0.3px;
+        }
+
+        .info {
+            background: #f8fafc;
+            border: 1px solid #eef2f7;
+            border-radius: 16px;
+            padding: 6px 18px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .info-row + .info-row {
+            border-top: 1px solid #eef2f7;
+        }
+
+        .label {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .value {
+            font-weight: 600;
+            font-size: 13.5px;
+            color: #1e293b;
+            letter-spacing: 0.2px;
+        }
+
+        .status {
+            margin-top: 16px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: #15803d;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status.inactive {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .qr-section {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .qr-frame {
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #eef2f7;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        /* ---------- DOWNLOAD BUTTON ---------- */
+        .download-btn {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4f46e5, #2563eb);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -6px rgba(37, 99, 235, 0.45);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 24px -6px rgba(37, 99, 235, 0.5);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn:disabled {
+            background: #93c5fd;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-msg {
+            font-size: 13px;
+            color: #64748b;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        .error-box {
+            max-width: 400px;
+            padding: 14px 18px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <!-- STUDENT CARD -->
+        <div id="student-card" class="student-card">
+
+            <div class="card-banner">
+                <div class="school">
+                    <h2 id="school-name">UNIVERSITY OF PUTHISASTRA</h2>
+                    <p>Digital Student Card</p>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <img
+                    id="student-photo"
+                    class="student-photo"
+                    src="https://i.pravatar.cc/300?img=12"
+                    alt="Student Photo"
+                    crossorigin="anonymous">
+
+                <h1 class="student-name" id="student-name">Bun Narith</h1>
+                <p class="student-sub">Official Enrollment Record</p>
+
+                <div class="info">
+                    <div class="info-row">
+                        <span class="label">Student ID</span>
+                        <span class="value" id="student-id">ST2026001</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">Start Date</span>
+                        <span class="value" id="start-date">29 Aug 2026</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">End Date</span>
+                        <span class="value" id="end-date">29 Aug 2027</span>
+                    </div>
+                </div>
+
+                <div class="qr-section">
+                    <div class="qr-frame">
+                        <div id="student-qr"></div>
+                    </div>
+                </div>
+
+                <!-- <div class="status" id="status-badge">
+                    ✓ ACTIVE STUDENT
+                </div> -->
+            </div>
+
+        </div>
+
+        <!-- DOWNLOAD BUTTON -->
+        <button class="download-btn" onclick="downloadCard()">
+            Download Student Card
+        </button>
+
+        <div class="status-msg" id="status-msg"></div>
+
+        <script>
+
+    // ---- Default data (used when no ?data= param is present) ----
+    const DEFAULT_DATA = {
+        school: "UNIVERSITY OF PUTHISASTRA",
+        name: "Bun Narith",
+        studentId: "ST2026001",
+        startDate: "29 Aug 2026",
+        endDate: "29 Aug 2027",
+        photo: "https://i.pravatar.cc/300?img=12",
+        active: true
+    };
+
+    // ---- Read JSON from the ?data= query param and populate the card ----
+    function loadStudentDataFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const raw = params.get("data");
+
+        if (!raw) {
+            populateCard(DEFAULT_DATA);
+            return;
+        }
+
+        try {
+            const student = JSON.parse(raw);
+            populateCard(student);
+        } catch (error) {
+            console.error("Invalid JSON:", error);
+            showError("Invalid student data.");
+            populateCard(DEFAULT_DATA);
+        }
+    }
+
+    function populateCard(data) {
+        document.getElementById("school-name").textContent = data.school;
+        document.getElementById("student-name").textContent = data.name;
+        document.getElementById("student-id").textContent = data.studentId;
+        document.getElementById("start-date").textContent = data.startDate;
+        document.getElementById("end-date").textContent = data.endDate;
+        document.getElementById("student-photo").src = data.photo;
+
+        // const badge = document.getElementById("status-badge");
+        // if (data.active) {
+        //     badge.textContent = "✓ ACTIVE STUDENT";
+        //     badge.classList.remove("inactive");
+        // } else {
+        //     badge.textContent = "✕ INACTIVE STUDENT";
+        //     badge.classList.add("inactive");
+        // }
+
+        // Remove previous QR
+        const qrContainer = document.getElementById("student-qr");
+        qrContainer.innerHTML = "";
+
+        // Generate QR
+        new QRCode(qrContainer, {
+            text: data.studentId,
+            width: 130,
+            height: 130,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+
+    function showError(text) {
+        const box = document.createElement("div");
+        box.className = "error-box";
+        box.textContent = text;
+        document.body.insertBefore(box, document.getElementById("student-card"));
+    }
+
+    window.addEventListener("DOMContentLoaded", loadStudentDataFromUrl);
+
+    // ---- Download / share button (unchanged) ----
+    async function downloadCard() {
+        const card = document.getElementById("student-card");
+        const btn = document.querySelector(".download-btn");
+        const msg = document.getElementById("status-msg");
+
+        const originalText = btn.textContent;
+        btn.textContent = "Preparing...";
+        btn.disabled = true;
+        msg.textContent = "";
+
+        try {
+            const canvas = await html2canvas(card, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: "#ffffff"
+            });
+
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+            const fileName = "student-card.png";
+            const file = new File([blob], fileName, { type: "image/png" });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: "Student Card",
+                });
+                msg.textContent = "Shared! Choose 'Save Image' to store it.";
+            } else if ("download" in document.createElement("a")) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.download = fileName;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                msg.textContent = "Saved to your Downloads folder.";
+            } else {
+                const url = URL.createObjectURL(blob);
+                window.open(url, "_blank");
+                msg.textContent = "Opened in a new tab — long-press to save.";
+            }
+        } catch (err) {
+            console.error("Download failed:", err);
+            if (err && err.name === "AbortError") {
+                msg.textContent = "Share cancelled.";
+            } else {
+                msg.textContent = "Something went wrong. Please try again.";
+            }
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    </script>
+
+    </body>
+</html>
